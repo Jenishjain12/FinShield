@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     database_url: str = f"sqlite:///{ROOT_DIR / 'data' / 'finshield.db'}"
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
-    cors_origin_regex: Optional[str] = None
+    cors_origin_regex: Optional[str] = r".*"
     similarity_threshold: float = 0.72
     upload_dir: str = str(ROOT_DIR / "data" / "uploads")
     max_upload_bytes: int = 5 * 1024 * 1024
@@ -39,7 +39,23 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+        val = (self.cors_origins or "").strip()
+        if not val:
+            return ["*"]
+        if val.startswith("[") and val.endswith("]"):
+            import json
+            try:
+                parsed = json.loads(val)
+                if isinstance(parsed, list):
+                    return [str(o).strip().strip("\"'") for o in parsed if str(o).strip()]
+            except Exception:
+                pass
+        cleaned = []
+        for origin in val.split(","):
+            c = origin.strip().strip("[]\"'")
+            if c:
+                cleaned.append(c)
+        return cleaned or ["*"]
 
 
 @lru_cache

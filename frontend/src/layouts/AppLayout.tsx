@@ -49,8 +49,8 @@ export function AppLayout() {
           setWakingUp(false);
           return true;
         }
-      } catch {
-        // Cold start in progress or network offline
+      } catch (err) {
+        console.warn("[FIN-SHIELD Health Probe] Server not reachable yet:", err);
       }
       return false;
     };

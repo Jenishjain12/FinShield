@@ -145,3 +145,4 @@ Run through this checklist 10 minutes before presenting:
    Navigate to the **Stream** tab and click **Start Simulator** (or send a burst) to confirm real-time Server-Sent Events (SSE) streaming works smoothly over HTTPS.
 4. **Inspect Anomaly Details**:
    Click into any transaction in the **Transactions** view or open the **Payer Safeguard** (`/consumer`) to confirm full explainability cards and risk scores render correctly.
+
