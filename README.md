@@ -467,7 +467,6 @@ We would rather you hear these from us:
 | Ritik Shekhawat | [@ritikshekhawat087-ops](https://github.com/ritikshekhawat087-ops) |
 | Mohit Suthar | [@Mohit-Suthar121](https://github.com/Mohit-Suthar121) |
 
-**License:** _add a license (e.g. MIT) before submission._
 
 <div align="center">
 
