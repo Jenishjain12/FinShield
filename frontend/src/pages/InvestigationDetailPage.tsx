@@ -25,7 +25,7 @@ import { TacticalBadge, ShimmerButton } from "../components/ui";
 import { useToast } from "../components/Toast";
 import { useAsync } from "../hooks/useAsync";
 import { formatDate, truncate } from "../lib/format";
-import { api } from "../services/api";
+import { api, API_BASE_URL } from "../services/api";
 import type { ReviewStatus } from "../types/api";
 
 const REVIEW_OPTIONS: { status: ReviewStatus; label: string; Icon: typeof Clock; desc: string }[] = [
@@ -255,7 +255,7 @@ export function InvestigationDetailPage() {
               <div className="mt-4 border border-line bg-surface/30 p-3">
                 <p className="eyebrow mb-2">Ingested Visual Media</p>
                 <img
-                  src={`/uploads/${data.image_filename}`}
+                  src={`${API_BASE_URL}/uploads/${data.image_filename}`}
                   alt="Ingested ad graphic"
                   className="border border-line w-full object-contain max-h-64 bg-black/40"
                 />

@@ -25,7 +25,7 @@ import {
   Radar,
   Activity,
 } from "lucide-react";
-import { api } from "../services/api";
+import { api, API_BASE_URL } from "../services/api";
 import type {
   DiscoveryCandidate,
   DiscoveryRun,
@@ -39,7 +39,7 @@ import { Skeleton } from "../components/Skeleton";
 import { ErrorBanner } from "../components/ErrorBanner";
 import { riskClass } from "../lib/format";
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+const BASE = API_BASE_URL;
 
 // ── Status helpers ────────────────────────────────────────────────────────
 

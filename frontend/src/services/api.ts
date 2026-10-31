@@ -37,7 +37,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   try {
     response = await fetch(`${BASE}${path}`, init);
   } catch {
-    throw new ApiError(0, "FIN-SHIELD backend is unavailable. Start the API on port 8000.");
+    throw new ApiError(0, "FIN-SHIELD backend is unavailable (it may be waking up; retry in about 30 seconds).");
   }
   if (!response.ok) {
     let detail = `Request failed (${response.status})`;

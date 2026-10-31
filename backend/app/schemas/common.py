@@ -123,5 +123,11 @@ class PaginatedAds(BaseModel):
 
 class HealthOut(BaseModel):
     status: str
-    service: str
-    dataset: str
+    service: str = "FIN-SHIELD"
+    dataset: str = "synthetic demonstration data plus investigator submissions"
+    environment: str = "development"
+    model_loaded: bool = False
+    model_version: str = "uninitialized"
+    sklearn_version: str = ""
+    db_ok: bool = False
+    copilot_configured: bool = False

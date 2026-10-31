@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Command,
   Crosshair,
+  Loader2,
   Menu,
   Search,
   X,
@@ -13,16 +14,64 @@ import {
 import { CommandBar } from "../components/CommandBar";
 import { OperationsRail } from "../components/OperationsRail";
 import { useAsync } from "../hooks/useAsync";
-import { api } from "../services/api";
+import { api, API_BASE_URL } from "../services/api";
 
 export function AppLayout() {
   const [expanded, setExpanded] = useState(true);
   const [mobile, setMobile] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const [wakingUp, setWakingUp] = useState(false);
   const location = useLocation();
 
   const { data: alerts } = useAsync(() => api.alerts(), []);
   const unreadCount = alerts ? alerts.filter((a) => !a.is_read).length : 0;
+
+  // Cold-start backend probe (Render free tier cold start warning)
+  useEffect(() => {
+    let isMounted = true;
+    let timer: any = null;
+    let pollInterval: any = null;
+
+    // Trigger waking banner if server doesn't respond within 3 seconds
+    timer = setTimeout(() => {
+      if (isMounted) setWakingUp(true);
+    }, 3000);
+
+    const checkServer = async (): Promise<boolean> => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000);
+        const res = await fetch(`${API_BASE_URL}/api/health`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (res.ok && isMounted) {
+          if (timer) clearTimeout(timer);
+          if (pollInterval) clearInterval(pollInterval);
+          setWakingUp(false);
+          return true;
+        }
+      } catch {
+        // Cold start in progress or network offline
+      }
+      return false;
+    };
+
+    checkServer().then((healthy) => {
+      if (!healthy && isMounted) {
+        pollInterval = setInterval(async () => {
+          const ok = await checkServer();
+          if (ok && pollInterval) {
+            clearInterval(pollInterval);
+          }
+        }, 5000);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      if (timer) clearTimeout(timer);
+      if (pollInterval) clearInterval(pollInterval);
+    };
+  }, []);
 
   useEffect(() => {
     setMobile(false);
@@ -178,6 +227,21 @@ export function AppLayout() {
             </div>
           </div>
         </header>
+
+        {/* Cold-start Server Waking Banner (Render Free Tier) */}
+        {wakingUp && (
+          <div className="border-b border-burnished-amber/30 bg-burnished-amber/10 px-4 py-2.5 text-xs font-mono text-burnished-amber transition-all animate-fade-in">
+            <div className="mx-auto flex max-w-[1640px] items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <Loader2 size={14} className="animate-spin text-burnished-amber shrink-0" />
+                <span>
+                  <strong>Waking up the server…</strong> Render free-tier instances sleep when inactive. Connecting to backend telemetry (typically takes 30–50s).
+                </span>
+              </div>
+              <span className="text-3xs text-dim hidden sm:inline uppercase tracking-wider">Auto-retrying every 5s</span>
+            </div>
+          </div>
+        )}
 
         {/* Primary Page Canvas */}
         <main

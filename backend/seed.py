@@ -8,6 +8,7 @@ sys.path.insert(0, str(ROOT))
 
 from sqlalchemy.orm import Session  # noqa: E402
 
+from app.core.config import get_settings  # noqa: E402
 from app.db.base import Base  # noqa: E402
 from app.db.session import SessionLocal, engine  # noqa: E402
 from app.main import migrate_schema  # noqa: E402
@@ -79,6 +80,7 @@ def seed_legacy_advertisements(db: Session):
 
 
 def main():
+    Path(get_settings().upload_dir).mkdir(parents=True, exist_ok=True)
     Base.metadata.create_all(bind=engine)
     migrate_schema(engine)
     db: Session = SessionLocal()

@@ -4,7 +4,15 @@ from tests.conftest import analyze_text
 def test_health(client):
     response = client.get("/api/health")
     assert response.status_code == 200
-    assert response.json()["status"] == "ok"
+    data = response.json()
+    assert data["status"] in ("ok", "degraded")
+    assert "environment" in data
+    assert "model_loaded" in data
+    assert "model_version" in data
+    assert "sklearn_version" in data
+    assert "db_ok" in data
+    assert data["db_ok"] is True
+    assert "copilot_configured" in data
 
 
 def test_analyze_creates_advertisement(client):

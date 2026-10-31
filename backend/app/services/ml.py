@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import os
 from datetime import datetime
 from pathlib import Path
@@ -9,6 +10,8 @@ import joblib
 import numpy as np
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import RobustScaler
+
+logger = logging.getLogger("finshield.ml")
 
 MODEL_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 MODEL_PATH = MODEL_DIR / "isolation_forest.joblib"
@@ -45,8 +48,20 @@ def get_model_bundle() -> dict[str, Any] | None:
         try:
             _CACHED_MODEL_BUNDLE = joblib.load(MODEL_PATH)
             return _CACHED_MODEL_BUNDLE
-        except Exception:
+        except Exception as exc:
+            logger.warning(
+                "CRITICAL NOTICE: Failed to load Isolation Forest model from %s (%s). "
+                "Anomaly scoring will run in fallback rules-only mode. Run 'python seed.py' to retrain with the local scikit-learn runtime.",
+                MODEL_PATH,
+                exc,
+            )
             return None
+    else:
+        logger.warning(
+            "CRITICAL NOTICE: Isolation Forest model file not found at %s. "
+            "Anomaly scoring will run in fallback rules-only mode. Run 'python seed.py' to initialize and train the model.",
+            MODEL_PATH,
+        )
     return None
 
 

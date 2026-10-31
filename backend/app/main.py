@@ -24,6 +24,7 @@ from app.api import (
 from app.core.config import get_settings
 from app.db.base import Base
 from app.db.session import engine
+from app.services.ml import get_model_bundle
 # Import all models to ensure metadata registration
 from app.models import (  # noqa: F401
     Advertisement,
@@ -93,13 +94,29 @@ app = FastAPI(
     version="0.2.0",
 )
 
+cors_kwargs: dict = {
+    "allow_origins": settings.cors_origin_list,
+    "allow_credentials": True,
+    "allow_methods": ["*"],
+    "allow_headers": ["*"],
+}
+if settings.cors_origin_regex:
+    cors_kwargs["allow_origin_regex"] = settings.cors_origin_regex
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origin_list,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    **cors_kwargs,
 )
+
+# Model startup readiness verification
+_bundle = get_model_bundle()
+if not _bundle:
+    logger.warning(
+        "CRITICAL STARTUP NOTICE: Isolation Forest anomaly model is not loaded. "
+        "Scoring will run in fallback rules-only mode. Run 'python seed.py' to initialize and train the model."
+    )
+else:
+    logger.info("FIN-SHIELD Anomaly model successfully loaded (%s).", _bundle.get("version", "isolation_forest_v1.0"))
 
 # Core UPI Transaction & Anomaly Endpoints
 app.include_router(health.router, prefix="/api")

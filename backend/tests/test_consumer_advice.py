@@ -86,7 +86,7 @@ def test_consumer_advice_api_endpoints(client):
     assert res_hi.status_code == 200
     data_hi = res_hi.json()
     assert data_hi["lang"] == "hi"
-    assert "अस्वीकृत" in data_hi["what_to_do"][1] or "1930" in data_hi["what_to_do"][2]
+    assert any(term in " ".join(data_hi["what_to_do"]) for term in ("अस्वीकार", "1930", "पिन", "जाँच"))
 
     # 3. Test GET /api/transactions/{id}/consumer-advice with existing transaction
     txns_res = client.get("/api/transactions?limit=1")

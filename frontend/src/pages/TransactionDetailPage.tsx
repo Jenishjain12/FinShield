@@ -157,9 +157,9 @@ export function TransactionDetailPage() {
         spotlightColor={isCritical ? "rgba(185, 56, 58, 0.15)" : "rgba(88, 199, 217, 0.08)"}
         className="p-5 sm:p-6 border-line bg-panel artifact-corner"
       >
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-          {/* Left Details (8 columns) */}
-          <div className="md:col-span-8 space-y-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          {/* Left Details */}
+          <div className="flex-1 space-y-3 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <TacticalBadge level={tx.risk_category} text={`${tx.risk_category} RISK`} />
               <span className="px-2 py-0.5 rounded text-3xs font-mono bg-surface border border-line text-sub uppercase font-semibold">
@@ -193,8 +193,8 @@ export function TransactionDetailPage() {
             )}
           </div>
 
-          {/* Right Triage Score Meter (4 columns) */}
-          <div className="md:col-span-4 p-5 bg-surface/50 border border-line rounded text-center space-y-2 relative overflow-hidden">
+          {/* Right Triage Score Meter */}
+          <div className="w-full md:w-80 shrink-0 p-5 bg-surface/50 border border-line rounded text-center space-y-2 relative overflow-hidden">
             {isCritical && (
               <BorderBeam colorFrom="#B9383A" colorTo="#E6654F" duration={5} size={150} borderWidth={1.5} />
             )}
@@ -215,9 +215,9 @@ export function TransactionDetailPage() {
       </SpotlightCard>
 
       {/* ── Main Forensic Grid: Counterparties (Left) vs Risk Analysis (Right) ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* LEFT COLUMN: Topology & Hardware (6 columns) */}
-        <div className="lg:col-span-6 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* LEFT COLUMN: Topology & Hardware */}
+        <div className="space-y-6">
           {/* Counterparties Topology Card */}
           <SpotlightCard className="p-5 border-line bg-panel artifact-corner">
             <div className="space-y-4">
@@ -369,8 +369,8 @@ export function TransactionDetailPage() {
           </SpotlightCard>
         </div>
 
-        {/* RIGHT COLUMN: Explainable Signals & Models (6 columns) */}
-        <div className="lg:col-span-6 space-y-6">
+        {/* RIGHT COLUMN: Explainable Signals & Models */}
+        <div className="space-y-6">
           {/* Rules & Signals Card */}
           <SpotlightCard className="p-5 border-line bg-panel artifact-corner">
             <div className="space-y-4">
