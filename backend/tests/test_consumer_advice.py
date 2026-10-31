@@ -97,3 +97,4 @@ def test_consumer_advice_api_endpoints(client):
         advice_data = advice_res.json()
         assert "verdict" in advice_data
         assert "headline" in advice_data
+

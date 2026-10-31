@@ -12,3 +12,4 @@ def test_get_model_evaluation_endpoint(client):
         assert "per_typology_recall_at_10" in data
         assert "leave_one_typology_out" in data
         assert len(data["model_comparison"]) >= 3
+

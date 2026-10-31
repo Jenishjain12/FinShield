@@ -42,3 +42,4 @@ def test_explain_ml_anomaly_permutation():
 
     explanations = explain_ml_anomaly(outlier_snapshot, top_k=2, method="permutation")
     assert isinstance(explanations, list)
+
