@@ -22,6 +22,7 @@ from app.services.generator import (
     SCAM_NOTES,
 )
 from app.services.scoring import score_and_assess_transaction
+from app.services.ml import explain_ml_anomaly
 
 logger = logging.getLogger("finshield.simulator")
 
@@ -252,6 +253,11 @@ class TransactionStreamSimulator:
             if txn.risk_category in ("CRITICAL", "HIGH", "MEDIUM"):
                 self._anomaly_count += 1
 
+            # Compute ML deviation explanations if anomalous
+            ml_exps = []
+            if assessment and assessment.feature_snapshot:
+                ml_exps = explain_ml_anomaly(assessment.feature_snapshot, top_k=2)
+
             # Broadcast event over event bus
             event_payload = {
                 "event_type": "transaction_processed",
@@ -267,6 +273,7 @@ class TransactionStreamSimulator:
                 "timestamp": txn.timestamp.isoformat(),
                 "alerts_generated": len(alerts),
                 "rule_hits": assessment.rule_hits if assessment else [],
+                "ml_explanations": ml_exps,
                 "telemetry": self.get_telemetry(),
             }
             await self.bus.publish("transactions", event_payload)

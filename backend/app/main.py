@@ -74,6 +74,13 @@ def migrate_schema(db_engine):
                     conn.execute(text("ALTER TABLE analyst_notes ADD COLUMN transaction_id VARCHAR(36)"))
                 if "author" not in notes_cols:
                     conn.execute(text("ALTER TABLE analyst_notes ADD COLUMN author VARCHAR(64) DEFAULT 'Analyst'"))
+
+            tx_cols = [r[1] for r in conn.execute(text("PRAGMA table_info(transactions)")).fetchall()]
+            if tx_cols:
+                if "is_fraud_synthetic" not in tx_cols:
+                    conn.execute(text("ALTER TABLE transactions ADD COLUMN is_fraud_synthetic BOOLEAN DEFAULT 0"))
+                if "fraud_typology" not in tx_cols:
+                    conn.execute(text("ALTER TABLE transactions ADD COLUMN fraud_typology VARCHAR(64) DEFAULT 'normal'"))
     except Exception as exc:
         logger.warning("Schema migration notice: %s", exc)
 

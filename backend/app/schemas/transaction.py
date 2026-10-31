@@ -29,6 +29,41 @@ class RuleHitOut(BaseModel):
     contribution: int
 
 
+class ConsumerCheckRequest(BaseModel):
+    amount: float = Field(..., gt=0, description="Transaction amount in INR")
+    sender_upi_handle: str = Field(default="user@oksbi", max_length=128)
+    receiver_upi_handle: str = Field(..., min_length=3, max_length=128)
+    sender_account_id: str = Field(default="ACC_DEMO_001", max_length=64)
+    receiver_account_id: str = Field(default="ACC_RECEIVER_999", max_length=64)
+    device_id: str = Field(default="DEV_MOBILE_001", max_length=64)
+    synthetic_ip: str = Field(default="103.21.54.12", max_length=45)
+    synthetic_geo_region: str = Field(default="Mumbai, MH", max_length=128)
+    transaction_type: str = Field(default="pay")
+    channel: str = Field(default="upi_app")
+    reference_note: str | None = None
+    merchant_id: str | None = None
+
+
+class ConsumerAdviceEvidence(BaseModel):
+    amount: float
+    receiver_handle: str
+    receiver_account: str
+    time: str
+    rule_hits_count: int
+    triage_score: int
+    risk_category: str
+
+
+class ConsumerAdviceOut(BaseModel):
+    verdict: str
+    headline: str
+    reasons: list[str]
+    what_to_do: list[str]
+    evidence: ConsumerAdviceEvidence
+    disclaimer: str
+    lang: str
+
+
 class RiskAssessmentOut(BaseModel):
     id: str
     transaction_id: str
@@ -92,6 +127,7 @@ class TransactionDetailOut(TransactionSummary):
     assessment: RiskAssessmentOut | None = None
     alerts: list[AlertOut] = []
     notes: list[AnalystNoteOut] = []
+    ml_explanations: list[dict[str, Any]] = []
 
 
 class PaginatedTransactions(BaseModel):

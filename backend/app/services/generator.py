@@ -75,11 +75,18 @@ PHISHING_HANDLES = [
 ]
 
 
-def generate_synthetic_dataset(db: Session, account_count: int = 40, transaction_count: int = 150) -> dict[str, Any]:
+def generate_synthetic_dataset(
+    db: Session,
+    account_count: int = 40,
+    transaction_count: int = 150,
+    seed: int | None = 42,
+) -> dict[str, Any]:
     """
     Generate synthetic customer profiles, devices, historical transactions,
     UPI fraud risk typologies, and train the Isolation Forest model.
     """
+    if seed is not None:
+        random.seed(seed)
     # 1. Create Synthetic Accounts
     accounts: list[CustomerAccount] = []
     devices: list[DeviceFingerprint] = []
@@ -161,17 +168,23 @@ def generate_synthetic_dataset(db: Session, account_count: int = 40, transaction
             geo = sender.primary_geo_region
             synthetic_ip = f"103.21.{random.randint(10, 240)}.{random.randint(1, 250)}"
             receiver_handle = receiver.primary_upi_handle
+            is_fraud = False
+            typology = "normal"
         else:
-            # Specific UPI Fraud Typology
-            anomaly_type = random.choice([
+            is_fraud = True
+            # Specific UPI Fraud Typologies
+            typology = random.choice([
                 "fake_collect",
                 "phishing_handle",
-                "mule_drain",
-                "high_value_outlier",
-                "shared_device",
+                "mule_fanout",
+                "velocity_burst",
+                "new_payee_high_value",
+                "device_ring",
+                "round_amount",
+                "geo_night",
             ])
 
-            if anomaly_type == "fake_collect":
+            if typology == "fake_collect":
                 amount = round(float(random.choice([4999, 9999, 14999, 25000])), 2)
                 tx_type = "collect"
                 channel = "collect_request"
@@ -181,7 +194,7 @@ def generate_synthetic_dataset(db: Session, account_count: int = 40, transaction
                 synthetic_ip = f"185.220.{random.randint(10, 240)}.{random.randint(1, 250)}"
                 receiver_handle = random.choice(PHISHING_HANDLES)
 
-            elif anomaly_type == "phishing_handle":
+            elif typology == "phishing_handle":
                 amount = round(random.uniform(5000.0, 35000.0), 2)
                 tx_type = "pay"
                 channel = "web_portal"
@@ -191,7 +204,7 @@ def generate_synthetic_dataset(db: Session, account_count: int = 40, transaction
                 synthetic_ip = f"103.21.{random.randint(10, 240)}.{random.randint(1, 250)}"
                 receiver_handle = random.choice(PHISHING_HANDLES)
 
-            elif anomaly_type == "mule_drain":
+            elif typology == "mule_fanout":
                 sender = mule_account
                 amount = round(random.uniform(25000.0, 75000.0), 2)
                 tx_type = "transfer"
@@ -202,7 +215,27 @@ def generate_synthetic_dataset(db: Session, account_count: int = 40, transaction
                 synthetic_ip = f"103.21.{random.randint(10, 240)}.{random.randint(1, 250)}"
                 receiver_handle = receiver.primary_upi_handle
 
-            elif anomaly_type == "shared_device":
+            elif typology == "velocity_burst":
+                amount = round(random.uniform(1000.0, 5000.0), 2)
+                tx_type = "pay"
+                channel = "upi_app"
+                note = "flash payment"
+                device_id = sender.primary_device_id
+                geo = sender.primary_geo_region
+                synthetic_ip = f"103.21.{random.randint(10, 240)}.{random.randint(1, 250)}"
+                receiver_handle = receiver.primary_upi_handle
+
+            elif typology == "new_payee_high_value":
+                amount = round(sender.baseline_avg_amount * random.uniform(6.0, 10.0), 2)
+                tx_type = "pay"
+                channel = "upi_app"
+                note = "property advance token"
+                device_id = sender.primary_device_id
+                geo = random.choice(REGIONS)
+                synthetic_ip = f"103.21.{random.randint(10, 240)}.{random.randint(1, 250)}"
+                receiver_handle = receiver.primary_upi_handle
+
+            elif typology == "device_ring":
                 amount = round(random.uniform(15000.0, 49999.0), 2)
                 tx_type = "pay"
                 channel = "upi_app"
@@ -212,14 +245,26 @@ def generate_synthetic_dataset(db: Session, account_count: int = 40, transaction
                 synthetic_ip = "192.168.10.45"
                 receiver_handle = receiver.primary_upi_handle
 
-            else:  # high_value_outlier
-                amount = round(sender.baseline_avg_amount * random.uniform(5.0, 9.0), 2)
+            elif typology == "round_amount":
+                amount = float(random.choice([10000, 20000, 50000, 100000]))
                 tx_type = "pay"
                 channel = "upi_app"
-                note = "investment"
+                note = "round lot settlement"
                 device_id = sender.primary_device_id
-                geo = random.choice(REGIONS)
+                geo = sender.primary_geo_region
                 synthetic_ip = f"103.21.{random.randint(10, 240)}.{random.randint(1, 250)}"
+                receiver_handle = receiver.primary_upi_handle
+
+            else:  # geo_night
+                amount = round(sender.baseline_avg_amount * random.uniform(3.0, 6.0), 2)
+                tx_type = "pay"
+                channel = "upi_app"
+                note = "late night transfer"
+                device_id = sender.primary_device_id
+                # Force time to 2-4 AM
+                tx_time = tx_time.replace(hour=random.choice([2, 3, 4]), minute=random.randint(0, 59))
+                geo = "Guwahati, AS"  # Discrepant geo
+                synthetic_ip = "45.154.255.88"
                 receiver_handle = receiver.primary_upi_handle
 
         txn, assessment, _ = score_and_assess_transaction(
@@ -237,6 +282,8 @@ def generate_synthetic_dataset(db: Session, account_count: int = 40, transaction
             reference_note=note,
             timestamp=tx_time,
             persist=True,
+            is_fraud_synthetic=is_fraud,
+            fraud_typology=typology,
             transaction_id_str=f"UPI/{tx_time.strftime('%Y%m%d%H%M')}/{100000 + i}_{uuid.uuid4().hex[:4].upper()}",
         )
         generated_txns.append(txn)

@@ -39,6 +39,10 @@ class Transaction(Base):
     risk_category: Mapped[str] = mapped_column(String(16), default="LOW", index=True)  # LOW, MEDIUM, HIGH, CRITICAL
     review_status: Mapped[str] = mapped_column(String(32), default="unreviewed", index=True)  # unreviewed, under_review, escalated, closed
 
+    # Synthetic ground-truth evaluation labels
+    is_fraud_synthetic: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    fraud_typology: Mapped[str] = mapped_column(String(64), default="normal", index=True)
+
     # Relationships
     assessment: Mapped[RiskAssessment | None] = relationship(
         "RiskAssessment", back_populates="transaction", uselist=False, cascade="all, delete-orphan"

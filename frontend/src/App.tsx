@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./layouts/AppLayout";
 import { AlertsPage } from "./pages/AlertsPage";
 import { AnalyzePage } from "./pages/AnalyzePage";
+import { ConsumerCheckPage } from "./pages/ConsumerCheckPage";
 import { CopilotPage } from "./pages/CopilotPage";
 import { DiscoveryPage } from "./pages/DiscoveryPage";
 import { EntitiesPage } from "./pages/EntitiesPage";
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/entities" element={<EntitiesPage />} />
         <Route path="/entities/:entityId" element={<EntitiesPage />} />
         <Route path="/model" element={<ModelPage />} />
+        <Route path="/consumer" element={<ConsumerCheckPage />} />
         <Route path="/alerts" element={<AlertsPage />} />
 
         {/* Preserved Evidence / Campaign / Investigation Routes */}

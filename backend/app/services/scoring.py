@@ -9,7 +9,7 @@ from app.models.entity_link import EntityLink
 from app.models.risk_assessment import RiskAssessment
 from app.models.transaction import Transaction
 from app.services.features import extract_features, feature_vector_for_model
-from app.services.ml import compute_triage_score, score_transaction_ml
+from app.services.ml import compute_triage_score, explain_ml_anomaly, score_transaction_ml
 from app.services.rules import evaluate_rules
 
 
@@ -30,6 +30,8 @@ def score_and_assess_transaction(
     timestamp: datetime | None = None,
     persist: bool = True,
     transaction_id_str: str | None = None,
+    is_fraud_synthetic: bool = False,
+    fraud_typology: str = "normal",
 ) -> tuple[Transaction, RiskAssessment, list[Alert]]:
     """
     Main evaluation pipeline:
@@ -112,6 +114,8 @@ def score_and_assess_transaction(
         channel=channel,
         reference_note=reference_note,
         is_synthetic=True,
+        is_fraud_synthetic=is_fraud_synthetic,
+        fraud_typology=fraud_typology,
         anomaly_score=ml_anomaly_score,
         risk_score=triage_score,
         risk_category=risk_category,
@@ -134,8 +138,13 @@ def score_and_assess_transaction(
     alerts: list[Alert] = []
     # Trigger alerts for anomalous or rule-hit transactions
     if triage_score >= 50 or any(r.get("severity") in ("CRITICAL", "HIGH") for r in rule_hits):
-        primary_reason = rule_hits[0]["explanation"] if rule_hits else f"Unusual multivariate anomaly detected (score {triage_score})"
-        alert_type = rule_hits[0]["rule_id"] if rule_hits else "MULTIVARIATE_ANOMALY"
+        if rule_hits:
+            primary_reason = rule_hits[0]["explanation"]
+            alert_type = rule_hits[0]["rule_id"]
+        else:
+            ml_exps = explain_ml_anomaly(features, top_k=1)
+            primary_reason = ml_exps[0]["human_text"] if ml_exps else f"Unusual multivariate anomaly detected (score {triage_score})"
+            alert_type = "MULTIVARIATE_ANOMALY"
         alert = Alert(
             idempotency_key=f"alert_{transaction_id_str}_{alert_type}",
             alert_type=alert_type,

@@ -67,3 +67,26 @@ def generate_dataset(account_count: int = 40, transaction_count: int = 150, db: 
     res = generate_synthetic_dataset(db, account_count=account_count, transaction_count=transaction_count)
     return res
 
+
+@router.get("/model/evaluation")
+def get_model_evaluation():
+    """
+    Return offline model evaluation benchmark results comparing Isolation Forest,
+    Rules, Hybrid Blend, and Supervised XGBoost on labeled synthetic data.
+    """
+    import json
+    from pathlib import Path
+    eval_file = Path(__file__).resolve().parent.parent.parent / "data" / "eval_results.json"
+    if not eval_file.exists():
+        return {
+            "status": "not_generated",
+            "message": "Evaluation suite has not been executed yet. Run 'python eval_model.py --n 5000' in backend/.",
+        }
+    try:
+        with open(eval_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to read evaluation results: {exc}")
+
+

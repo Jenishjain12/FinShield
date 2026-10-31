@@ -12,6 +12,8 @@ from app.models.risk_assessment import RiskAssessment
 from app.models.transaction import Transaction
 from app.schemas.transaction import (
     AnalystNoteOut,
+    ConsumerAdviceOut,
+    ConsumerCheckRequest,
     NoteCreate,
     PaginatedTransactions,
     ReviewStatusUpdate,
@@ -21,6 +23,8 @@ from app.schemas.transaction import (
     TransactionSummary,
 )
 from app.services.scoring import score_and_assess_transaction
+from app.services.ml import explain_ml_anomaly
+from app.services.consumer_advice import build_consumer_advice
 
 router = APIRouter()
 
@@ -222,6 +226,61 @@ def add_investigation_note(
     )
 
 
+@router.post("/consumer/check", response_model=ConsumerAdviceOut)
+def check_consumer_payment(
+    payload: ConsumerCheckRequest,
+    lang: str = Query("en", pattern="^(en|hi)$"),
+    db: Session = Depends(get_db),
+) -> ConsumerAdviceOut:
+    """
+    Dry-run what-if check for consumer/payer warning screen.
+    Scores features, rules, and ML anomaly without saving anything to the database.
+    """
+    txn, assessment, _ = score_and_assess_transaction(
+        db=db,
+        amount=payload.amount,
+        sender_account_id=payload.sender_account_id,
+        receiver_account_id=payload.receiver_account_id,
+        sender_upi_handle=payload.sender_upi_handle,
+        receiver_upi_handle=payload.receiver_upi_handle,
+        device_id=payload.device_id,
+        synthetic_ip=payload.synthetic_ip,
+        synthetic_geo_region=payload.synthetic_geo_region,
+        transaction_type=payload.transaction_type,
+        channel=payload.channel,
+        reference_note=payload.reference_note,
+        merchant_id=payload.merchant_id,
+        persist=False,
+    )
+    advice = build_consumer_advice(txn, assessment, lang=lang)
+    return ConsumerAdviceOut(**advice)
+
+
+@router.get("/transactions/{transaction_id:path}/consumer-advice", response_model=ConsumerAdviceOut)
+def get_transaction_consumer_advice(
+    transaction_id: str,
+    lang: str = Query("en", pattern="^(en|hi)$"),
+    db: Session = Depends(get_db),
+) -> ConsumerAdviceOut:
+    """Return consumer-facing deterministic advice and safe actions for an existing transaction."""
+    t = (
+        db.query(Transaction)
+        .options(joinedload(Transaction.assessment))
+        .filter(
+            or_(
+                Transaction.id == transaction_id,
+                Transaction.transaction_id == transaction_id,
+            )
+        )
+        .first()
+    )
+    if not t:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+
+    advice = build_consumer_advice(t, t.assessment, lang=lang)
+    return ConsumerAdviceOut(**advice)
+
+
 @router.get("/transactions/{transaction_id:path}", response_model=TransactionDetailOut)
 def get_transaction_detail(transaction_id: str, db: Session = Depends(get_db)) -> TransactionDetailOut:
     t = (
@@ -284,6 +343,10 @@ def get_transaction_detail(transaction_id: str, db: Session = Depends(get_db)) -
         for n in t.notes
     ]
 
+    ml_explanations_out = []
+    if t.assessment and t.assessment.feature_snapshot:
+        ml_explanations_out = explain_ml_anomaly(t.assessment.feature_snapshot, top_k=3)
+
     return TransactionDetailOut(
         id=t.id,
         transaction_id=t.transaction_id,
@@ -310,5 +373,6 @@ def get_transaction_detail(transaction_id: str, db: Session = Depends(get_db)) -
         assessment=assessment_out,
         alerts=alerts_out,
         notes=notes_out,
+        ml_explanations=ml_explanations_out,
     )
 

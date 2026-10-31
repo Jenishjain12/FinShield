@@ -51,6 +51,8 @@ export function AppLayout() {
     ? "ENTITY TRACE GRAPH"
     : location.pathname.startsWith("/model")
     ? "MODEL CALIBRATION"
+    : location.pathname.startsWith("/consumer")
+    ? "PAYER SAFEGUARD"
     : location.pathname.startsWith("/stream")
     ? "STREAM OPERATIONS"
     : location.pathname.startsWith("/investigations/")

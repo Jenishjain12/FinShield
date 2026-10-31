@@ -124,10 +124,19 @@ export function TransactionDetailPage() {
           <span className="font-mono text-xs text-signal-cyan font-semibold">{tx.transaction_id}</span>
         </div>
 
-        {/* Review Status Selector */}
-        <div className="flex items-center gap-2.5">
+        {/* Actions & Review Status Selector */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Link
+            to="/consumer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono bg-panel border border-line text-sub hover:text-signal-cyan hover:border-signal-cyan/40 transition-colors"
+            title="Preview how this payment request looks to an end consumer"
+          >
+            <Smartphone size={13} className="text-signal-cyan" />
+            <span>Payer Warning View</span>
+          </Link>
+
           <span className="text-3xs font-mono text-dim uppercase tracking-wider">
-            Human Disposition:
+            Disposition:
           </span>
           <select
             value={tx.review_status}
@@ -433,6 +442,71 @@ export function TransactionDetailPage() {
                   <span className="text-signal-cyan font-semibold">{assessment?.model_version || "isolation_forest_v1.0"}</span>
                 </div>
               </div>
+
+              {/* Machine Learning Outlier Explanations */}
+              {tx.ml_explanations && tx.ml_explanations.length > 0 && (
+                <div className="space-y-3 pt-2 border-t border-line">
+                  <div className="flex items-center justify-between">
+                    <span className="text-3xs font-mono uppercase text-dim block font-semibold">
+                      Why the Anomaly Model Flagged This
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-panel border border-line text-dim">
+                      Deviation from baseline (not exact model attribution)
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {tx.ml_explanations.map((exp, idx) => {
+                      const devAbs = Math.abs(exp.deviation);
+                      const barWidth = Math.min(100, Math.max(12, (devAbs / 6) * 100));
+                      const isHighDev = devAbs >= 3.0;
+
+                      return (
+                        <div
+                          key={idx}
+                          className="p-3 bg-surface/60 border border-line rounded space-y-2 hover:border-line-hover transition-colors"
+                        >
+                          <div className="flex items-center justify-between text-xs font-mono">
+                            <span className="font-semibold text-paper flex items-center gap-1.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-signal-cyan" />
+                              {exp.feature}
+                            </span>
+                            <span
+                              className={`px-1.5 py-0.2 rounded text-3xs font-bold ${
+                                isHighDev
+                                  ? "bg-signal-red/15 text-signal-red border border-signal-red/30"
+                                  : "bg-burnished-amber/15 text-burnished-amber border border-burnished-amber/30"
+                              }`}
+                            >
+                              {exp.deviation > 0 ? `+${exp.deviation}` : exp.deviation}σ ({exp.direction})
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-sub font-sans leading-relaxed">
+                            {exp.human_text}
+                          </p>
+
+                          {/* Horizontal Deviation Bar */}
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-3xs font-mono text-dim">
+                              <span>Baseline: {exp.baseline}</span>
+                              <span className="text-paper font-semibold">Observed: {exp.value}</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-panel rounded-full overflow-hidden border border-line/40">
+                              <div
+                                className={`h-full rounded-full transition-all duration-500 ${
+                                  isHighDev ? "bg-signal-red" : "bg-burnished-amber"
+                                }`}
+                                style={{ width: `${barWidth}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Feature Snapshot */}
               {assessment?.feature_snapshot && (

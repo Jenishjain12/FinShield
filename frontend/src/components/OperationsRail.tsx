@@ -14,6 +14,7 @@ import {
   ScanSearch,
   Shield,
   ShieldAlert,
+  Smartphone,
   Sun,
   Zap,
 } from "lucide-react";
@@ -35,6 +36,7 @@ export const MAIN_NAV: NavItem[] = [
   { to: "/patterns", label: "Risk Constellations", icon: ShieldAlert },
   { to: "/entities", label: "Entity Trace Graph", icon: Network },
   { to: "/model", label: "Model Calibration", icon: Cpu },
+  { to: "/consumer", label: "Payer Check", icon: Smartphone },
   { to: "/alerts", label: "Attention Queue", icon: Bell },
   { to: "/investigations", label: "Case Dossiers", icon: FolderSearch },
   { to: "/campaigns", label: "Evidence Field", icon: GitFork },

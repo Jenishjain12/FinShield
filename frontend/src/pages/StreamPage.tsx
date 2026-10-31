@@ -383,6 +383,17 @@ export function StreamPage() {
                       Triggered Rules: {ev.data.assessment.rule_hits.map((r: any) => r.rule_id).join(", ")}
                     </div>
                   )}
+
+                  {ev.data?.ml_explanations && ev.data.ml_explanations.length > 0 && (
+                    <div className="mt-1 text-cyan-300/90 text-[10px] flex flex-wrap items-center gap-1.5 font-mono">
+                      <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-cyan-950/80 border border-cyan-800/40 text-cyan-400 font-semibold">
+                        ML Deviation
+                      </span>
+                      <span>
+                        {ev.data.ml_explanations.slice(0, 2).map((e: any) => e.human_text).join(" • ")}
+                      </span>
+                    </div>
+                  )}
                 </div>
               );
             })

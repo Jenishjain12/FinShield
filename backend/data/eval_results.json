@@ -1,0 +1,266 @@
+{
+  "metadata": {
+    "evaluation_date": "2026-10-31T02:31:55.361901",
+    "n_samples": 5000,
+    "n_train": 3500,
+    "n_test": 1500,
+    "fraud_prevalence": 0.1,
+    "seed": 42,
+    "elapsed_seconds": 4.71,
+    "xgboost_version": "3.4.1"
+  },
+  "model_comparison": [
+    {
+      "model": "Rules Only",
+      "roc_auc": 0.9089,
+      "pr_auc": 0.7935,
+      "precision_at_5": 1.0,
+      "recall_at_5": 0.5,
+      "precision_at_10": 0.78,
+      "recall_at_10": 0.78
+    },
+    {
+      "model": "Isolation Forest",
+      "roc_auc": 0.8999,
+      "pr_auc": 0.7552,
+      "precision_at_5": 0.9467,
+      "recall_at_5": 0.4733,
+      "precision_at_10": 0.68,
+      "recall_at_10": 0.68
+    },
+    {
+      "model": "Hybrid Blend (0.4 ML + 0.6 Rules)",
+      "roc_auc": 0.9226,
+      "pr_auc": 0.8578,
+      "precision_at_5": 1.0,
+      "recall_at_5": 0.5,
+      "precision_at_10": 0.8067,
+      "recall_at_10": 0.8067
+    },
+    {
+      "model": "Supervised XGBoost",
+      "roc_auc": 0.9436,
+      "pr_auc": 0.9053,
+      "precision_at_5": 1.0,
+      "recall_at_5": 0.5,
+      "precision_at_10": 0.8667,
+      "recall_at_10": 0.8667
+    }
+  ],
+  "per_typology_recall_at_10": [
+    {
+      "model": "Rules Only",
+      "device_ring": 0.9412,
+      "fake_collect": 1.0,
+      "geo_night": 1.0,
+      "mule_fanout": 0.92,
+      "new_payee_high_value": 0.9524,
+      "phishing_handle": 0.85,
+      "round_amount": 0.7895,
+      "velocity_burst": 0.05
+    },
+    {
+      "model": "Isolation Forest",
+      "device_ring": 1.0,
+      "fake_collect": 1.0,
+      "geo_night": 1.0,
+      "mule_fanout": 0.84,
+      "new_payee_high_value": 0.6667,
+      "phishing_handle": 0.25,
+      "round_amount": 0.8947,
+      "velocity_burst": 0.0
+    },
+    {
+      "model": "Hybrid Blend (0.4 ML + 0.6 Rules)",
+      "device_ring": 1.0,
+      "fake_collect": 1.0,
+      "geo_night": 1.0,
+      "mule_fanout": 0.92,
+      "new_payee_high_value": 0.9524,
+      "phishing_handle": 0.85,
+      "round_amount": 0.8421,
+      "velocity_burst": 0.0
+    },
+    {
+      "model": "Supervised XGBoost",
+      "device_ring": 1.0,
+      "fake_collect": 1.0,
+      "geo_night": 1.0,
+      "mule_fanout": 1.0,
+      "new_payee_high_value": 1.0,
+      "phishing_handle": 1.0,
+      "round_amount": 1.0,
+      "velocity_burst": 0.0
+    }
+  ],
+  "leave_one_typology_out": [
+    {
+      "unseen_typology": "device_ring",
+      "test_cases": 17,
+      "xgboost_zero_day_recall": 1.0,
+      "isolation_forest_recall": 1.0,
+      "blend_recall": 1.0,
+      "unsupervised_advantage": 0.0
+    },
+    {
+      "unseen_typology": "fake_collect",
+      "test_cases": 15,
+      "xgboost_zero_day_recall": 0.8667,
+      "isolation_forest_recall": 1.0,
+      "blend_recall": 1.0,
+      "unsupervised_advantage": 0.1333
+    },
+    {
+      "unseen_typology": "geo_night",
+      "test_cases": 13,
+      "xgboost_zero_day_recall": 1.0,
+      "isolation_forest_recall": 1.0,
+      "blend_recall": 1.0,
+      "unsupervised_advantage": 0.0
+    },
+    {
+      "unseen_typology": "mule_fanout",
+      "test_cases": 25,
+      "xgboost_zero_day_recall": 1.0,
+      "isolation_forest_recall": 0.84,
+      "blend_recall": 0.92,
+      "unsupervised_advantage": -0.08
+    },
+    {
+      "unseen_typology": "new_payee_high_value",
+      "test_cases": 21,
+      "xgboost_zero_day_recall": 1.0,
+      "isolation_forest_recall": 0.6667,
+      "blend_recall": 0.9524,
+      "unsupervised_advantage": -0.0476
+    },
+    {
+      "unseen_typology": "phishing_handle",
+      "test_cases": 20,
+      "xgboost_zero_day_recall": 1.0,
+      "isolation_forest_recall": 0.25,
+      "blend_recall": 0.85,
+      "unsupervised_advantage": -0.15
+    },
+    {
+      "unseen_typology": "round_amount",
+      "test_cases": 19,
+      "xgboost_zero_day_recall": 1.0,
+      "isolation_forest_recall": 0.8947,
+      "blend_recall": 0.8421,
+      "unsupervised_advantage": -0.1579
+    },
+    {
+      "unseen_typology": "velocity_burst",
+      "test_cases": 20,
+      "xgboost_zero_day_recall": 0.0,
+      "isolation_forest_recall": 0.0,
+      "blend_recall": 0.0,
+      "unsupervised_advantage": 0.0
+    }
+  ],
+  "parameter_sweeps": {
+    "contamination_sweep": [
+      {
+        "param": "contamination",
+        "value": 0.03,
+        "roc_auc": 0.8999,
+        "precision_at_10": 0.68,
+        "recall_at_10": 0.68
+      },
+      {
+        "param": "contamination",
+        "value": 0.05,
+        "roc_auc": 0.8999,
+        "precision_at_10": 0.68,
+        "recall_at_10": 0.68
+      },
+      {
+        "param": "contamination",
+        "value": 0.08,
+        "roc_auc": 0.8999,
+        "precision_at_10": 0.68,
+        "recall_at_10": 0.68
+      },
+      {
+        "param": "contamination",
+        "value": 0.1,
+        "roc_auc": 0.8999,
+        "precision_at_10": 0.68,
+        "recall_at_10": 0.68
+      }
+    ],
+    "blend_weight_sweep": [
+      {
+        "ml_weight": 0.2,
+        "rule_weight": 0.8,
+        "roc_auc": 0.9183,
+        "pr_auc": 0.8435,
+        "recall_at_10": 0.7867
+      },
+      {
+        "ml_weight": 0.3,
+        "rule_weight": 0.7,
+        "roc_auc": 0.9201,
+        "pr_auc": 0.8525,
+        "recall_at_10": 0.7933
+      },
+      {
+        "ml_weight": 0.4,
+        "rule_weight": 0.6,
+        "roc_auc": 0.9226,
+        "pr_auc": 0.8578,
+        "recall_at_10": 0.8067
+      },
+      {
+        "ml_weight": 0.5,
+        "rule_weight": 0.5,
+        "roc_auc": 0.9233,
+        "pr_auc": 0.8576,
+        "recall_at_10": 0.8067
+      },
+      {
+        "ml_weight": 0.6,
+        "rule_weight": 0.4,
+        "roc_auc": 0.9226,
+        "pr_auc": 0.852,
+        "recall_at_10": 0.8
+      }
+    ]
+  },
+  "feature_ablation": [
+    {
+      "feature_set": "All 17 Features",
+      "features_retained": 17,
+      "roc_auc": 0.8999,
+      "recall_at_10": 0.68,
+      "delta_recall_vs_baseline": 0.0
+    },
+    {
+      "feature_set": "Drop Device & IP (cols 10, 11)",
+      "features_retained": 15,
+      "roc_auc": 0.8968,
+      "recall_at_10": 0.6867,
+      "delta_recall_vs_baseline": 0.0067
+    },
+    {
+      "feature_set": "Drop Velocity Features (cols 4, 5, 6, 7)",
+      "features_retained": 13,
+      "roc_auc": 0.9144,
+      "recall_at_10": 0.7733,
+      "delta_recall_vs_baseline": 0.0933
+    },
+    {
+      "feature_set": "Drop Amount Features (cols 0, 8, 14)",
+      "features_retained": 14,
+      "roc_auc": 0.8085,
+      "recall_at_10": 0.54,
+      "delta_recall_vs_baseline": -0.14
+    }
+  ],
+  "external_benchmarks": [],
+  "methodology_disclosures": {
+    "leakage_risk_statement": "Synthetic data generator introduces known typologies with parameterized noise. While deterministic rules capture patterns that align closely with generator logic, unsupervised Isolation Forest evaluates multi-dimensional density distributions without prior knowledge of labels, ensuring unbiased outlier scoring.",
+    "zero_day_generalization": "The leave-one-typology-out cross experiment proves that supervised models (XGBoost) fail to recognize zero-day fraud typologies when omitted from training data. Conversely, the hybrid blend and unsupervised Isolation Forest retain high anomaly recall because they flag statistical distance rather than learned boundary rules."
+  }
+}

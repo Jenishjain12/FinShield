@@ -272,6 +272,114 @@ export interface TransactionDetail extends TransactionSummary {
     content: string;
     created_at: string;
   }[];
+  ml_explanations?: MLExplanation[];
+}
+
+export interface MLExplanation {
+  feature: string;
+  value: number;
+  baseline: number;
+  deviation: number;
+  direction: "HIGH" | "LOW" | "NORMAL";
+  human_text: string;
+  importance_delta?: number;
+}
+
+export interface ConsumerAdviceEvidence {
+  amount: number;
+  receiver_handle: string;
+  receiver_account: string;
+  time: string;
+  rule_hits_count: number;
+  triage_score: number;
+  risk_category: string;
+}
+
+export interface ConsumerAdviceResponse {
+  verdict: "DONT_APPROVE" | "BE_CAREFUL" | "LOOKS_NORMAL";
+  headline: string;
+  reasons: string[];
+  what_to_do: string[];
+  evidence: ConsumerAdviceEvidence;
+  disclaimer: string;
+  lang: "en" | "hi";
+}
+
+export interface ConsumerCheckRequest {
+  amount: number;
+  sender_upi_handle?: string;
+  receiver_upi_handle: string;
+  sender_account_id?: string;
+  receiver_account_id?: string;
+  device_id?: string;
+  synthetic_ip?: string;
+  synthetic_geo_region?: string;
+  transaction_type?: string;
+  channel?: string;
+  reference_note?: string;
+  merchant_id?: string;
+}
+
+export interface ModelBenchmarkRow {
+  model: string;
+  roc_auc: number;
+  pr_auc: number;
+  precision_at_5: number;
+  recall_at_5: number;
+  precision_at_10: number;
+  recall_at_10: number;
+}
+
+export interface LeaveOutBenchmarkRow {
+  unseen_typology: string;
+  test_cases: number;
+  xgboost_zero_day_recall: number;
+  isolation_forest_recall: number;
+  blend_recall: number;
+  unsupervised_advantage: number;
+}
+
+export interface ModelEvaluationData {
+  metadata: {
+    evaluation_date: string;
+    n_samples: number;
+    n_train: number;
+    n_test: number;
+    fraud_prevalence: number;
+    seed: number;
+    elapsed_seconds: number;
+    xgboost_version: string;
+  };
+  model_comparison: ModelBenchmarkRow[];
+  per_typology_recall_at_10: Array<Record<string, any>>;
+  leave_one_typology_out: LeaveOutBenchmarkRow[];
+  parameter_sweeps: {
+    contamination_sweep: Array<{
+      param: string;
+      value: number;
+      roc_auc: number;
+      precision_at_10: number;
+      recall_at_10: number;
+    }>;
+    blend_weight_sweep: Array<{
+      ml_weight: number;
+      rule_weight: number;
+      roc_auc: number;
+      pr_auc: number;
+      recall_at_10: number;
+    }>;
+  };
+  feature_ablation: Array<{
+    feature_set: string;
+    features_retained: number;
+    roc_auc: number;
+    recall_at_10: number;
+    delta_recall_vs_baseline: number;
+  }>;
+  methodology_disclosures: {
+    leakage_risk_statement: string;
+    zero_day_generalization: string;
+  };
 }
 
 export interface PaginatedTransactions {

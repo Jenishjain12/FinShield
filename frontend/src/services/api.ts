@@ -23,6 +23,9 @@ import type {
   StreamTelemetry,
   TransactionDetail,
   TransactionSummary,
+  ConsumerAdviceResponse,
+  ConsumerCheckRequest,
+  ModelEvaluationData,
 } from "../types/api";
 import { ApiError } from "../types/api";
 
@@ -176,4 +179,15 @@ export const api = {
   // ── Model Telemetry ─────────────────────────────────────────────────────
   modelStatus: () => request<ModelTelemetry>("/api/model/status"),
   modelTrain: () => request<any>("/api/model/train", { method: "POST" }),
+  modelEvaluation: () => request<ModelEvaluationData>("/api/model/evaluation"),
+
+  // ── Consumer Advice & Payer Warning ──────────────────────────────────────
+  consumerAdvice: (transactionId: string, lang = "en") =>
+    request<ConsumerAdviceResponse>(`/api/transactions/${encodeURIComponent(transactionId)}/consumer-advice?lang=${lang}`),
+  consumerCheck: (payload: ConsumerCheckRequest, lang = "en") =>
+    request<ConsumerAdviceResponse>(`/api/consumer/check?lang=${lang}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
 };
