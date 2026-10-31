@@ -1,0 +1,697 @@
+/* ─── Typefaces ───────────────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK THEME  (default — applied when html.dark)
+   Signal Cartography — Evidence Observatory Palette
+═══════════════════════════════════════════════════════════════════════════ */
+:root,
+html.dark {
+  color-scheme: dark;
+
+  /* Signal Cartography Tokens */
+  --ink-950:         #070B10;        /* app background */
+  --ink-900:         #0C1219;        /* primary surface */
+  --ink-850:         #111A23;        /* elevated surface */
+  --ink-800:         #16232E;        /* active/hover surface */
+
+  --paper-100:       #EEF1EC;        /* primary text */
+  --paper-300:       #BAC3C5;        /* secondary text */
+  --paper-500:       #74828B;        /* muted metadata */
+
+  --signal-cyan:     #58C7D9;        /* primary analytical action */
+  --signal-cyan-dim: rgba(88, 199, 217, 0.12);
+
+  --mineral-green:   #63B78C;        /* low */
+  --burnished-amber: #D9A34C;        /* medium */
+  --vermilion:       #E6654F;        /* high */
+  --signal-red:      #B9383A;        /* critical */
+
+  --line-subtle:     rgba(181, 211, 218, 0.10);
+  --line-strong:     rgba(181, 211, 218, 0.20);
+
+  /* Application layers mapped to tokens */
+  --c-bg:            var(--ink-950);
+  --c-panel:         var(--ink-900);
+  --c-surface:       var(--ink-850);
+  --c-overlay:       var(--ink-800);
+
+  /* Borders */
+  --c-line:          var(--line-strong);
+  --c-line-subtle:   var(--line-subtle);
+
+  /* Text */
+  --c-paper:         var(--paper-100);
+  --c-sub:           var(--paper-300);
+  --c-dim:           var(--paper-500);
+
+  /* Shadows */
+  --shadow-panel:    0 1px 2px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-modal:    0 8px 48px rgba(0,0,0,0.7);
+  --shadow-card:     0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.15);
+
+  /* Skeleton shimmer */
+  --shimmer-base:    #0C1219;
+  --shimmer-shine:   #16232E;
+
+  /* React Flow */
+  --rf-bg:           #070B10;
+  --rf-border:       rgba(181, 211, 218, 0.15);
+  --rf-icon:         #BAC3C5;
+  --rf-hover:        #111A23;
+  --rf-dot:          rgba(181, 211, 218, 0.20);
+
+  /* Recharts */
+  --chart-tooltip-bg:     #0C1219;
+  --chart-tooltip-border: rgba(181, 211, 218, 0.20);
+  --chart-tooltip-color:  #EEF1EC;
+  --chart-grid:           rgba(181, 211, 218, 0.10);
+  --chart-axis:           #74828B;
+
+  /* Glow accents */
+  --c-accent-glow: rgba(88, 199, 217, 0.10);
+  --c-danger-glow: rgba(230, 101, 79, 0.10);
+  --c-ok-glow:     rgba(99, 183, 140, 0.10);
+  --c-warn-glow:   rgba(217, 163, 76, 0.10);
+  --gradient-ink:  linear-gradient(180deg, var(--c-panel) 0%, var(--c-bg) 100%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT THEME  (applied when html.light)
+   Warm off-white paper surfaces, graphite text, reduced saturation
+═══════════════════════════════════════════════════════════════════════════ */
+html.light {
+  color-scheme: light;
+
+  /* Light Paper Tokens */
+  --ink-950:         #F4F6F4;
+  --ink-900:         #FCFDFC;
+  --ink-850:         #EDF1EC;
+  --ink-800:         #E2E8E1;
+
+  --paper-100:       #111A20;
+  --paper-300:       #3E4D56;
+  --paper-500:       #6E7D87;
+
+  --signal-cyan:     #1E7E91;
+  --signal-cyan-dim: rgba(30, 126, 145, 0.10);
+
+  --mineral-green:   #347A55;
+  --burnished-amber: #996A23;
+  --vermilion:       #AB3C2A;
+  --signal-red:      #8F2426;
+
+  --line-subtle:     rgba(30, 50, 60, 0.08);
+  --line-strong:     rgba(30, 50, 60, 0.18);
+
+  /* Application layers */
+  --c-bg:            var(--ink-950);
+  --c-panel:         var(--ink-900);
+  --c-surface:       var(--ink-850);
+  --c-overlay:       var(--ink-800);
+
+  /* Borders */
+  --c-line:          var(--line-strong);
+  --c-line-subtle:   var(--line-subtle);
+
+  /* Text */
+  --c-paper:         var(--paper-100);
+  --c-sub:           var(--paper-300);
+  --c-dim:           var(--paper-500);
+
+  /* Shadows */
+  --shadow-panel:    0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-modal:    0 8px 48px rgba(0,0,0,0.18);
+  --shadow-card:     0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.05);
+
+  /* Skeleton shimmer */
+  --shimmer-base:    #EDF1EC;
+  --shimmer-shine:   #DDE4DC;
+
+  /* React Flow */
+  --rf-bg:           #FCFDFC;
+  --rf-border:       rgba(30, 50, 60, 0.15);
+  --rf-icon:         #3E4D56;
+  --rf-hover:        #EDF1EC;
+  --rf-dot:          rgba(30, 50, 60, 0.2);
+
+  /* Recharts */
+  --chart-tooltip-bg:     #FCFDFC;
+  --chart-tooltip-border: rgba(30, 50, 60, 0.18);
+  --chart-tooltip-color:  #111A20;
+  --chart-grid:           rgba(30, 50, 60, 0.08);
+  --chart-axis:           #6E7D87;
+
+  /* Glow accents */
+  --c-accent-glow: rgba(30, 126, 145, 0.06);
+  --c-danger-glow: rgba(171, 60, 42, 0.06);
+  --c-ok-glow:     rgba(52, 122, 85, 0.06);
+  --c-warn-glow:   rgba(153, 106, 35, 0.06);
+  --gradient-ink:  linear-gradient(180deg, var(--c-panel) 0%, var(--c-bg) 100%);
+}
+
+/* ─── Color-scheme syncs native inputs/scrollbars ─────────────────────── */
+html.dark  { color-scheme: dark;  }
+html.light { color-scheme: light; }
+
+/* ─── Base reset ──────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Smooth theme transition */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--c-bg);
+  color: var(--c-paper);
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ─── Focus states ────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgba(77, 184, 212, 0.7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar          { width: 6px; height: 6px; }
+::-webkit-scrollbar-track    { background: transparent; }
+::-webkit-scrollbar-thumb    { background: var(--c-line); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-surface); }
+
+/* ─── Reduced-motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Keyframe Definitions ────────────────────────────────────────────────── */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-right {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes evidence-pulse {
+  0%, 100% { border-color: var(--c-line); }
+  50%       { border-color: rgba(77,184,212,0.55); }
+}
+
+@keyframes node-appear {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes scan-line {
+  0%   { transform: translateX(-100%); opacity: 0.6; }
+  100% { transform: translateX(100%);  opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+/* ─── Utility layers ──────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Stagger entrance animations */
+  .stagger-children > *               { animation: fade-in 0.3s ease-out both; }
+  .stagger-children > *:nth-child(1)  { animation-delay: 0.00s; }
+  .stagger-children > *:nth-child(2)  { animation-delay: 0.05s; }
+  .stagger-children > *:nth-child(3)  { animation-delay: 0.10s; }
+  .stagger-children > *:nth-child(4)  { animation-delay: 0.15s; }
+  .stagger-children > *:nth-child(5)  { animation-delay: 0.20s; }
+  .stagger-children > *:nth-child(6)  { animation-delay: 0.25s; }
+  .stagger-children > *:nth-child(7)  { animation-delay: 0.30s; }
+  .stagger-children > *:nth-child(8)  { animation-delay: 0.35s; }
+
+  /* Tabular numeric alignment */
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Entrance animation utilities */
+  .animate-slide-up      { animation: slide-up 0.3s ease-out both; }
+  .animate-slide-right   { animation: slide-right 0.3s ease-out both; }
+  .animate-evidence-pulse { animation: evidence-pulse 2s ease-in-out infinite; }
+  .animate-scan          { animation: scan-line 1.4s linear infinite; }
+  .animate-node-appear   { animation: node-appear 0.35s cubic-bezier(0.34,1.56,0.64,1) both; }
+}
+
+/* ─── Skeleton shimmer ────────────────────────────────────────────────────── */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--shimmer-base)  0%,
+    var(--shimmer-shine) 50%,
+    var(--shimmer-base)  100%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* ─── Recharts theme overrides ────────────────────────────────────────────── */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background:    var(--chart-tooltip-bg)     !important;
+  border:        1px solid var(--chart-tooltip-border) !important;
+  border-radius: 6px !important;
+  box-shadow:    var(--shadow-panel)         !important;
+  font-size:     12px !important;
+  padding:       8px 12px !important;
+  color:         var(--chart-tooltip-color)  !important;
+}
+.recharts-cartesian-grid line {
+  stroke: var(--chart-grid) !important;
+}
+.recharts-text {
+  fill: var(--chart-axis) !important;
+}
+
+/* ─── React Flow theme ────────────────────────────────────────────────────── */
+.react-flow__controls button {
+  background:   var(--rf-bg)     !important;
+  border-color: var(--rf-border) !important;
+  fill:         var(--rf-icon)   !important;
+  color:        var(--rf-icon)   !important;
+}
+.react-flow__controls button:hover {
+  background:   var(--rf-hover)  !important;
+}
+.react-flow__background pattern circle {
+  fill: var(--rf-dot) !important;
+}
+
+/* ─── Evidence Observatory primitives ─────────────────────────────────── */
+.display-face   { font-family: "Libre Baskerville", Georgia, serif; letter-spacing: -0.035em; }
+.evidence-mono  { font-family: "DM Mono", ui-monospace, SFMono-Regular, monospace; }
+.app-grain      { position: relative; isolation: isolate; }
+.app-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .18;
+  background-image:
+    radial-gradient(rgba(139,170,185,.26) .45px, transparent .65px),
+    radial-gradient(rgba(255,255,255,.07) .4px, transparent .55px);
+  background-size: 13px 13px, 19px 19px;
+  background-position: 0 0, 5px 8px;
+  mask-image: linear-gradient(to bottom, black, transparent 75%);
+}
+.eyebrow {
+  font-size: .625rem;
+  line-height: 1rem;
+  letter-spacing: .18em;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--c-dim);
+}
+
+/* ─── dossier-panel: adds hairline inner-top highlight ───────────────────── */
+.dossier-panel {
+  background: color-mix(in srgb, var(--c-panel) 92%, transparent);
+  border: 1px solid var(--c-line);
+  box-shadow: var(--shadow-panel), inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+.artifact-corner { position: relative; }
+.artifact-corner::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 17px;
+  height: 17px;
+  border-left: 1px solid var(--c-line);
+  border-bottom: 1px solid var(--c-line);
+  background: var(--c-bg);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+
+/* ─── command-surface: more sophisticated gradient + border ──────────────── */
+.command-surface {
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--c-panel) 88%, #0d2e38 12%) 0%,
+    color-mix(in srgb, var(--c-panel) 96%, #18495a 4%) 60%,
+    var(--c-panel) 100%
+  );
+  border: 1px solid var(--c-line);
+  box-shadow: 0 1px 0 rgba(77,184,212,0.06) inset, var(--shadow-panel);
+}
+
+.signal-line { background-image: repeating-linear-gradient(90deg, var(--c-line) 0 1px, transparent 1px 7px); }
+.trace-bg    {
+  background-image:
+    linear-gradient(rgba(77,184,212,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77,184,212,.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.risk-strip { background: linear-gradient(90deg, #3DAB6E 0 25%, #D4923D 25% 50%, #C94040 50% 75%, #9E2B2B 75%); }
+
+/* ─── ink-button: subtle lift on hover ───────────────────────────────────── */
+.ink-button {
+  border: 1px solid var(--c-line);
+  background: var(--c-panel);
+  color: var(--c-sub);
+  transition: border-color .15s ease, color .15s ease, background .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.ink-button:hover {
+  border-color: rgba(77,184,212,.5);
+  color: var(--c-paper);
+  background: var(--c-surface);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+.ink-button:focus-visible { outline-color: #4DB8D4; }
+
+html.light .app-grain::before { opacity: .05; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NEW COMPONENT PRIMITIVES
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Score ring — SVG-based animated score ring */
+.score-ring {
+  transition: stroke-dashoffset 0.8s ease-out;
+  transform-origin: center;
+  animation: score-fill 0.8s ease-out both;
+}
+
+/* Signal pulse — pulsing border for unread signals / alerts */
+.signal-pulse {
+  border: 1px solid rgba(77,184,212,0.3);
+  animation: evidence-pulse 2s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+/* Case stamp — rotated absolute-positioned review stamp */
+.case-stamp {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  font-family: "DM Mono", ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.72;
+  transform: rotate(-12deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Evidence tag — forensic artifact label */
+.evidence-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  background: color-mix(in srgb, var(--c-surface) 80%, transparent);
+  border: 1px solid var(--c-line);
+  border-radius: 3px;
+  font-family: "DM Mono", ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--c-sub);
+  text-transform: uppercase;
+}
+
+/* Trace line — horizontal hairline separator */
+.trace-line {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--c-line) 20%, var(--c-line) 80%, transparent 100%);
+  border: none;
+  margin: 0;
+}
+
+/* Urgency rail — vertical left accent rail for alert levels */
+.urgency-rail {
+  position: relative;
+  padding-left: 14px;
+}
+.urgency-rail::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+/* Intake zone — dashed border evidence dropzone */
+.intake-zone {
+  border: 1.5px dashed var(--c-line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--c-surface) 40%, transparent);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.intake-zone:hover,
+.intake-zone.drag-over {
+  border-color: rgba(77,184,212,0.5);
+  background: var(--c-accent-glow);
+}
+
+/* Gradient ink — subtle panel-to-bg fade */
+.gradient-ink {
+  background: var(--gradient-ink);
+}
+
+/* Field grid — forensic grid background texture */
+.field-grid {
+  background-image:
+    linear-gradient(rgba(77,184,212,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77,184,212,.022) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Constellation glow — radial glow behind network nodes */
+.constellation-glow {
+  position: relative;
+}
+.constellation-glow::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--c-accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Methodology notice — dignified note block */
+.methodology-notice {
+  display: flex;
+  gap: 10px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--c-surface) 60%, transparent);
+  border-left: 3px solid rgba(77,184,212,0.4);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.75rem;
+  color: var(--c-sub);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* Copilot message — user bubble */
+.copilot-message-user {
+  display: flex;
+  justify-content: flex-end;
+}
+.copilot-message-user > * {
+  max-width: 82%;
+  padding: 8px 12px;
+  background: color-mix(in srgb, #4DB8D4 14%, var(--c-surface));
+  border: 1px solid rgba(77,184,212,0.22);
+  border-radius: 12px 12px 3px 12px;
+  font-size: 0.8125rem;
+  color: var(--c-paper);
+  line-height: 1.5;
+}
+
+/* Copilot message — AI response */
+.copilot-message-ai {
+  display: flex;
+  justify-content: flex-start;
+}
+.copilot-message-ai > * {
+  max-width: 92%;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--c-panel) 90%, transparent);
+  border: 1px solid var(--c-line);
+  border-radius: 3px 12px 12px 12px;
+  font-size: 0.8125rem;
+  color: var(--c-paper);
+  line-height: 1.6;
+  box-shadow: var(--shadow-card);
+}
+.copilot-message-ai > * + * {
+  border-top: 1px solid var(--c-line-subtle);
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+/* Discovery pipeline step — step tile with connecting line */
+.discovery-pipeline-step {
+  position: relative;
+  padding-left: 28px;
+  padding-bottom: 20px;
+}
+.discovery-pipeline-step::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 22px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, var(--c-line) 0%, transparent 100%);
+}
+.discovery-pipeline-step:last-child::before { display: none; }
+.discovery-pipeline-step::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c-surface);
+  border: 2px solid var(--c-line);
+}
+.discovery-pipeline-step.active::after {
+  border-color: #4DB8D4;
+  background: rgba(77,184,212,0.15);
+  box-shadow: 0 0 0 3px rgba(77,184,212,0.12);
+}
+
+/* Investigation stamp — review status visual badge */
+.investigation-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  font-family: "DM Mono", ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  transform: rotate(-2deg);
+  user-select: none;
+}
+
+/* ─── Scan-line overlay helper ───────────────────────────────────────────── */
+.scan-overlay {
+  position: relative;
+  overflow: hidden;
+}
+.scan-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: 2px;
+  top: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(77,184,212,0.4) 50%, transparent 100%);
+  animation: scan-line 1.6s linear infinite;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AETHER-FORENSICS DESIGN SYSTEM PRIMITIVES (21st.dev + Aceternity + Hover.dev)
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Dot Matrix Atmospheric Grid */
+.bg-dot-matrix {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+html.light .bg-dot-matrix {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+}
+
+/* Titanium Forged Glass Panel */
+.aether-panel {
+  background: linear-gradient(145deg, rgba(14, 21, 28, 0.75) 0%, rgba(8, 12, 17, 0.85) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Tactical Corner Crosshairs */
+.tactical-corner {
+  position: relative;
+}
+.tactical-corner::before,
+.tactical-corner::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-color: rgba(77, 184, 212, 0.4);
+  pointer-events: none;
+}
+.tactical-corner::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1.5px solid;
+  border-left: 1.5px solid;
+}
+.tactical-corner::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1.5px solid;
+  border-right: 1.5px solid;
+}
+
+/* Shimmer Sweep Animation */
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.animate-shimmer {
+  animation: shimmer-sweep 2.5s infinite ease-in-out;
+}
+
+/* Pulse Glow Keyframes */
+@keyframes pulse-cyan {
+  0%, 100% { box-shadow: 0 0 12px rgba(0, 242, 254, 0.15); }
+  50% { box-shadow: 0 0 24px rgba(0, 242, 254, 0.35); }
+}
+.glow-cyan {
+  animation: pulse-cyan 3s infinite ease-in-out;
+}
+

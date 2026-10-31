@@ -1,0 +1,5 @@
+{
+  "name": "fin-shield",
+  "private": true,
+  "description": "FIN-SHIELD monorepo marker so npm does not walk to the parent portfolio project"
+}
